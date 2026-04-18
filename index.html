@@ -255,7 +255,7 @@ section.bg-icy{background:var(--icy);}
   }
 </style>
   <!-- 카카오 지도 SDK: 0b301d299e08d884e791f74a6492a200 자리에 발급받은 JavaScript 키 입력 -->
-  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0b301d299e08d884e791f74a6492a200"></script>
+  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0b301d299e08d884e791f74a6492a200&autoload=false"></script>
 </head>
 <body>
 
@@ -779,7 +779,8 @@ function notify(msg) {
 
 /* ── 초기화 ── */
 window.addEventListener('DOMContentLoaded', function() {
-
+  // 카카오 지도 SDK 로드 후 초기화
+  kakao.maps.load(function() {
 
 /* ── 카카오 지도 ── */
 (function() {
@@ -865,7 +866,7 @@ window.addEventListener('DOMContentLoaded', function() {
       var btnColor = p.color;
       var infoHtml =
         '<div class="ka-info">' +
-        '<button class="ka-info-close" onclick="var el=this.parentNode.parentNode;if(el&&el._overlay)el._overlay.setMap(null);window._openOverlay=null;">×</button>' +
+        '<button class="ka-info-close" onclick="var p=this.parentNode;while(p&&!p._overlay)p=p.parentNode;if(p)p._overlay.setMap(null);window._openOverlay=null;">×</button>' +
         '<p class="ka-day" style="color:' + p.color + ';">' + dayLabel + '</p>' +
         '<p class="ka-bname">' + p.name + '</p>' +
         '<p class="ka-award">' + p.award + '</p>' +
@@ -917,19 +918,9 @@ window.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // SDK 로드 완료 후 초기화
-  if (typeof kakao !== 'undefined' && typeof kakao.maps !== 'undefined') {
-    kakao.maps.load(initKakaoMap);
-  } else {
-    // SDK 스크립트 onload 대기
-    var scripts = document.querySelectorAll('script[src*="dapi.kakao.com"]');
-    if (scripts.length > 0) {
-      scripts[0].addEventListener('load', function() {
-        if (typeof kakao !== 'undefined') kakao.maps.load(initKakaoMap);
-      });
-    }
-  }
+  initKakaoMap();
 })();
+  }); // kakao.maps.load 끝
 
   loadGallery();
   setInterval(loadGallery, 30000);
