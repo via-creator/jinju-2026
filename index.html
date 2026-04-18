@@ -865,7 +865,7 @@ window.addEventListener('DOMContentLoaded', function() {
       var btnColor = p.color;
       var infoHtml =
         '<div class="ka-info">' +
-        '<button class="ka-info-close" onclick="this.closest(\'.ka-info\').parentNode._overlay.setMap(null);window._openOverlay=null;">×</button>' +
+        '<button class="ka-info-close" onclick="var el=this.parentNode.parentNode;if(el&&el._overlay)el._overlay.setMap(null);window._openOverlay=null;">×</button>' +
         '<p class="ka-day" style="color:' + p.color + ';">' + dayLabel + '</p>' +
         '<p class="ka-bname">' + p.name + '</p>' +
         '<p class="ka-award">' + p.award + '</p>' +
