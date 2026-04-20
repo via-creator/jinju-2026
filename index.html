@@ -853,7 +853,7 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
           </div>
           <div class="bcard-links">
             <a href="https://www.jinju.go.kr/park/00413/00414/00416.web" target="_blank" class="btn">진주시 우드랜드 →</a>
-            <a href="/jinju-2026/진양호_우드랜드_부속동.pdf" target="_blank" class="btn btn-primary">수상작 PDF ↓</a>
+            <button class="btn btn-primary" onclick="openPdfModal('진양호_우드랜드_부속동.pdf','진양호 우드랜드 부속동')">수상작 PDF ↓</button>
             <a href="https://blog.naver.com/supiacons/223691160334" target="_blank" class="btn">글루램 구조 →</a>
           </div>
         </div>
@@ -923,7 +923,7 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
             </div>
           </div>
           <div class="bcard-links">
-            <a href="/jinju-2026/진주_물빛나루쉼터.pdf" target="_blank" class="btn btn-primary">수상작 PDF ↓</a>
+            <button class="btn btn-primary" onclick="openPdfModal('진주_물빛나루쉼터.pdf','진주 물빛나루쉼터')">수상작 PDF ↓</button>
             <a href="https://www.jk-ar.com/poffloatinglights" target="_blank" class="btn">설계자 아카이브 →</a>
           </div>
           <p class="bcard-link-note">※ 심화 아카이브 (브리크매거진, 유료 회원 열람): <a href="https://magazine.brique.co/project/jkar_pavilion-of-floating-lights/" target="_blank">magazine.brique.co</a></p>
@@ -1769,6 +1769,30 @@ function selectBldgInForm(bldg) {
 }
 
 
+
+// ── PDF 모달 ──────────────────────────────────
+function openPdfModal(filename, title) {
+  var base = 'https://via-creator.github.io/jinju-2026/';
+  document.getElementById('pdf-modal-title').textContent = title;
+  document.getElementById('pdf-open-btn').href = base + filename;
+  document.getElementById('pdf-download-btn').href = base + filename;
+  document.getElementById('pdf-download-btn').download = filename;
+  var modal = document.getElementById('pdf-modal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closePdfModal() {
+  document.getElementById('pdf-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+var toastTimer = null;
+function showToast(msg, duration) {
+  var toast = document.getElementById('toast-msg');
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toast.style.display = 'none'; }, duration || 2500);
+}
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -1784,5 +1808,30 @@ function toggleQA(btn){
   tog.textContent = isOpen ? '관점 하나 ▾' : '닫기 ▴';
 }
 </script>
+
+<!-- PDF 모달 -->
+<div id="pdf-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closePdfModal()">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:28px 24px 36px;width:100%;max-width:480px;box-shadow:0 -4px 24px rgba(0,0,0,.15);">
+    <div style="width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 20px;"></div>
+    <p id="pdf-modal-title" style="font-size:16px;font-weight:700;color:#1A1A1A;margin-bottom:6px;"></p>
+    <p style="font-size:12px;color:#999;margin-bottom:24px;">PDF 수상작 자료</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a id="pdf-open-btn" href="#" target="_blank"
+        style="display:block;padding:15px;background:#2E5894;color:#fff;text-align:center;border-radius:12px;font-size:15px;font-weight:600;text-decoration:none;"
+        onclick="showToast('PDF를 여는 중입니다...');closePdfModal();">
+        📄 열기 (미리보기)
+      </a>
+      <a id="pdf-download-btn" href="#" download
+        style="display:block;padding:15px;background:#F2F4F7;color:#2E5894;text-align:center;border-radius:12px;font-size:15px;font-weight:600;text-decoration:none;border:1.5px solid #c4cad4;"
+        onclick="showToast('다운로드를 시작합니다. 완료 후 알림이 표시됩니다.');closePdfModal();setTimeout(()=>showToast('✅ 다운로드 완료! 파일 앱 또는 다운로드 폴더를 확인해주세요.',4000),3000);">
+        ⬇ 저장 (다운로드)
+      </a>
+      <button onclick="closePdfModal()" style="padding:13px;background:none;border:none;color:#999;font-size:14px;cursor:pointer;">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- 토스트 알림 -->
+<div id="toast-msg" style="display:none;position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#1A1A1A;color:#fff;padding:12px 20px;border-radius:24px;font-size:13px;z-index:10000;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.3);"></div>
 </body>
 </html>
