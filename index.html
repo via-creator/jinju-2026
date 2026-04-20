@@ -1237,7 +1237,7 @@ var bldgQuestions = {
 // ── 기록 모드 ─────────────────────────────────────
 var currentMode = 'simple';
 // ★ 공식 제출 엔드포인트 — Google Apps Script 배포 후 URL 교체
-var SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbwZI9-kgFr4sPwkIvuIcE8E0DDRbskm2tZBkl4J1ykm7sIL2KSBXjuQSV3nb6Jf0c-E/exec';
+var SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbzcAubtN8yDsn0K7gOHXtHb0v00j7-Cx9AMnqL06TuEk5XuPSkj4b_hCwhuS2A76PgA/exec';
 
 function setMode(mode) {
   currentMode = mode;
@@ -1547,10 +1547,13 @@ function submitRecord() {
       var qi2 = bldgQAs[bldg][parseInt(qaIdx2)];
       if (qi2) { selQ2 = qi2.q; selA2 = qi2.a; }
     }
+    var rec     = myRecords[bldg] || {};
+    var photos  = (rec.photos || []).map(function(p){ return {src:p.src}; });
     var payload = {
       name: nameVal || '익명', bus: busVal, building: bldg,
       mode: currentMode, question: selQ2, tags: tags.join(' / '),
-      memo: memo, timestamp: new Date().toLocaleString('ko-KR'), sessionId: myId
+      memo: memo, photos: photos,
+      timestamp: new Date().toLocaleString('ko-KR'), sessionId: myId
     };
     fetch(SUBMIT_URL, {
       method:'POST', mode:'no-cors',
