@@ -424,40 +424,41 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
   overflow:hidden;
 }
 .bus-block-header{
-  display:flex;align-items:center;gap:14px;
-  padding:12px 16px;
+  display:block;
+  padding:13px 16px;
   background:rgba(46,88,148,.18);
   border-bottom:1px solid rgba(46,88,148,.22);
   text-decoration:none;
 }
 .bus-block-num{
-  font-size:15px;font-weight:700;color:var(--charcoal);
-  flex-shrink:0;white-space:nowrap;
+  font-size:16px;font-weight:700;color:var(--charcoal);
+  display:block;margin-bottom:4px;
 }
-.bus-block-left{flex:1;min-width:0;}
+.bus-block-left{display:block;}
 .bus-block-meta{
-  display:flex;align-items:baseline;gap:6px;
-  margin-bottom:3px;
+  display:flex;align-items:center;gap:5px;
+  flex-wrap:nowrap;margin-bottom:3px;
 }
 .bus-block-co{
   font-size:12px;color:var(--charcoal);font-weight:500;
+  white-space:nowrap;
 }
 .bus-block-plate{
   font-family:"DM Mono",monospace;font-size:11px;
-  color:#888;letter-spacing:0;
+  color:#777;letter-spacing:0;white-space:nowrap;
 }
 .bus-block-region{
   font-size:12px;color:var(--charcoal);font-weight:500;
+  display:block;margin-bottom:6px;word-break:keep-all;
 }
 .bus-block-right{
-  display:flex;flex-direction:column;justify-content:center;
-  align-items:flex-end;gap:5px;flex-shrink:0;
+  display:flex;align-items:center;gap:8px;
 }
-.bus-block-driver{font-size:11px;color:#555;}
+.bus-block-driver{font-size:12px;color:#555;}
 .bus-block-tel{
   display:flex;align-items:center;gap:5px;
   font-family:"DM Mono",monospace;font-size:13px;font-weight:700;
-  color:var(--cobalt);text-decoration:none;
+  color:var(--cobalt);text-decoration:none;margin-left:auto;
 }
 .bus-tel-icon{width:14px;height:14px;flex-shrink:0;}
 .bus-stops{padding:10px 18px 6px 54px;display:flex;flex-direction:column;gap:0;}
@@ -563,10 +564,10 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
               <span class="bus-block-plate">· 경기70아6167</span>
             </div>
             <span class="bus-block-region">서산·당진·태안·보령·청양·서천</span>
-          </div>
-          <div class="bus-block-right">
-            <span class="bus-block-driver">한병윤 기사</span>
-            <span class="bus-block-tel"><svg class="bus-tel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>010-5263-5299</span>
+            <div class="bus-block-right">
+              <span class="bus-block-driver">한병윤 기사</span>
+              <span class="bus-block-tel"><svg class="bus-tel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>010-5263-5299</span>
+            </div>
           </div>
         </a>
         <div class="bus-stops">
@@ -596,10 +597,10 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
               <span class="bus-block-plate">· 충북70바7404</span>
             </div>
             <span class="bus-block-region">천안·아산·금산·계룡</span>
-          </div>
-          <div class="bus-block-right">
-            <span class="bus-block-driver">정구봉 기사</span>
-            <span class="bus-block-tel"><svg class="bus-tel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>010-8964-0096</span>
+            <div class="bus-block-right">
+              <span class="bus-block-driver">정구봉 기사</span>
+              <span class="bus-block-tel"><svg class="bus-tel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>010-8964-0096</span>
+            </div>
           </div>
         </a>
         <div class="bus-stops">
@@ -625,10 +626,10 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
               <span class="bus-block-plate">· 충북70바4047</span>
             </div>
             <span class="bus-block-region">도청·예산·공주·논산·부여</span>
-          </div>
-          <div class="bus-block-right">
-            <span class="bus-block-driver">함정식 기사</span>
-            <span class="bus-block-tel"><svg class="bus-tel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>010-8343-8345</span>
+            <div class="bus-block-right">
+              <span class="bus-block-driver">함정식 기사</span>
+              <span class="bus-block-tel"><svg class="bus-tel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>010-8343-8345</span>
+            </div>
           </div>
         </a>
         <div class="bus-stops">
