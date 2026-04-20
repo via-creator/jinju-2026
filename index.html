@@ -1127,7 +1127,7 @@ var bldgQuestions = {
 // ── 기록 모드 ─────────────────────────────────────
 var currentMode = 'simple';
 // ★ 공식 제출 엔드포인트 — Google Apps Script 배포 후 URL 교체
-var SUBMIT_URL = '';  // 예: 'https://script.google.com/macros/s/XXXXX/exec'
+var SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbwZI9-kgFr4sPwkIvuIcE8E0DDRbskm2tZBkl4J1ykm7sIL2KSBXjuQSV3nb6Jf0c-E/exec';
 
 function setMode(mode) {
   currentMode = mode;
@@ -1629,7 +1629,10 @@ function submitOfficial() {
 
   if (!SUBMIT_URL) {
     // URL 미설정 시 클립보드 복사로 대체
+    var nameVal2 = (document.getElementById('name-in').value || '').trim() || '익명';
+    var busVal2  = document.getElementById('bus-sel').value || '-';
     var lines = ['[2026 건축기행 진주 공식제출]'];
+    lines.push('이름: ' + nameVal2 + '  ' + busVal2);
     lines.push('건물: ' + bldg);
     lines.push('모드: ' + (currentMode === 'simple' ? '간편' : '전문'));
     if (selectedQ) lines.push('질문: ' + selectedQ);
@@ -1644,7 +1647,11 @@ function submitOfficial() {
     return;
   }
 
+  var nameVal = (document.getElementById('name-in').value || '').trim();
+  var busVal  = document.getElementById('bus-sel').value || '';
   var payload = {
+    name: nameVal || '익명',
+    bus: busVal,
     building: bldg,
     mode: currentMode,
     question: selectedQ,
@@ -1669,8 +1676,15 @@ function submitOfficial() {
       btn.disabled = false;
     }, 3000);
   }).catch(function() {
-    btn.textContent = '❌ 오류 — 다시 시도';
+    btn.textContent = '❌ 오류 — 복사로 대신 제출';
     btn.disabled = false;
+    // 실패 시 자동으로 클립보드 복사 유도
+    if (navigator.clipboard) {
+      var fb = ['[제출 실패 — 단톡방 붙여넣기]', '이름: ' + (payload.name||'익명'),
+        '건물: ' + payload.building, '태그: ' + payload.tags, '소감: ' + payload.memo];
+      navigator.clipboard.writeText(fb.join('\n'));
+      setTimeout(function(){ alert('제출에 실패했습니다.\n텍스트가 복사됐으니 단톡방에 붙여넣어 주세요.'); }, 100);
+    }
   });
 }
 
