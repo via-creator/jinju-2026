@@ -6,67 +6,74 @@
 <title>2026 건축기행 진주 — 관리자 대시보드</title>
 <style>
   :root {
-    --cobalt: #2E5894; --charcoal: #2F3E46; --viridian: #2D6A4F;
-    --icy: #F2F4F7; --ink: #1A1A1A; --muted: #888;
-    --c1:#7A6548; --c2:#2D7D9A; --c3:#B5692E; --c4:#5C5450; --c5:#2D6A4F;
+    --cobalt:#2E5894;--charcoal:#2F3E46;--viridian:#2D6A4F;
+    --icy:#F2F4F7;--ink:#1A1A1A;--muted:#888;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Noto Sans KR', sans-serif; background: #0f1923; color: #f0f0f0; min-height: 100vh; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#0f1923;color:#f0f0f0;min-height:100vh;}
 
   /* 로그인 */
-  #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; flex-direction:column; gap:16px; }
-  .login-box { background:#1e2d3a; border-radius:12px; padding:40px; width:320px; text-align:center; }
-  .login-box h1 { font-size:18px; margin-bottom:24px; color:#82B4FF; }
-  .login-box input { width:100%; padding:12px; border-radius:8px; border:1px solid #444; background:#152030; color:#fff; font-size:16px; text-align:center; margin-bottom:12px; }
-  .login-box button { width:100%; padding:12px; border-radius:8px; border:none; background:var(--cobalt); color:#fff; font-size:16px; cursor:pointer; font-weight:600; }
+  #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;}
+  .login-box{background:#1e2d3a;border-radius:12px;padding:40px;width:320px;text-align:center;}
+  .login-box h1{font-size:18px;margin-bottom:24px;color:#82B4FF;}
+  .login-box input{width:100%;padding:12px;border-radius:8px;border:1px solid #444;background:#152030;color:#fff;font-size:16px;text-align:center;margin-bottom:12px;}
+  .login-box button{width:100%;padding:12px;border-radius:8px;border:none;background:var(--cobalt);color:#fff;font-size:16px;cursor:pointer;font-weight:600;}
 
   /* 대시보드 */
-  #dashboard { display:none; }
-  .top-bar { background:#1e2d3a; padding:16px 24px; display:flex; align-items:center; gap:16px; border-bottom:1px solid #2a3a4a; position:sticky; top:0; z-index:100; }
-  .top-bar h1 { font-size:16px; color:#82B4FF; flex:1; }
-  .total-badge { background:var(--cobalt); color:#fff; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600; }
-  .refresh-btn { padding:6px 14px; border:1px solid #444; border-radius:6px; background:transparent; color:#aaa; cursor:pointer; font-size:12px; }
-  .refresh-btn:hover { border-color:#82B4FF; color:#82B4FF; }
+  #dashboard{display:none;}
+  .top-bar{background:#1e2d3a;padding:14px 24px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #2a3a4a;position:sticky;top:0;z-index:100;}
+  .top-bar h1{font-size:16px;color:#82B4FF;flex:1;}
+  .total-badge{background:var(--cobalt);color:#fff;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;}
+  .refresh-btn,.proj-btn{padding:6px 14px;border-radius:6px;background:transparent;cursor:pointer;font-size:12px;}
+  .refresh-btn{border:1px solid #444;color:#aaa;}
+  .proj-btn{border:1px solid #5DB882;color:#5DB882;}
 
-  /* 건물 탭 */
-  .tabs { display:flex; gap:0; overflow-x:auto; background:#172533; border-bottom:1px solid #2a3a4a; padding:0 16px; }
-  .tab { padding:12px 18px; font-size:13px; color:#888; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; transition:all .18s; }
-  .tab.on { color:#82B4FF; border-bottom-color:#82B4FF; font-weight:600; }
-  .tab:hover { color:#bbb; }
+  /* 탭 */
+  .tabs{display:flex;overflow-x:auto;background:#172533;border-bottom:1px solid #2a3a4a;padding:0 16px;}
+  .tab{padding:12px 18px;font-size:13px;color:#888;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .18s;}
+  .tab.on{color:#82B4FF;border-bottom-color:#82B4FF;font-weight:600;}
 
-  /* 카드 그리드 */
-  .feed { padding:20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
-  .card { background:#1e2d3a; border-radius:10px; overflow:hidden; border:1px solid #2a3a4a; }
-  .card-top { padding:10px 14px; display:flex; align-items:center; gap:8px; }
-  .card-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-  .card-name { font-size:13px; font-weight:600; flex:1; }
-  .card-bus { font-size:10px; color:#888; font-family:monospace; }
-  .card-time { font-size:10px; color:#666; font-family:monospace; }
-  .card-body { padding:10px 14px; border-top:1px solid #253545; }
-  .card-q { font-size:10px; color:#5DB882; margin-bottom:4px; font-weight:600; }
-  .card-tags { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:6px; }
-  .card-tag { padding:2px 8px; border-radius:10px; font-size:10px; background:rgba(255,255,255,.08); color:#ccc; }
-  .card-memo { font-size:13px; color:#e0e0e0; line-height:1.6; }
-  .card-mode { font-size:9px; color:#555; font-family:monospace; float:right; }
+  /* 콘텐츠 */
+  .content{padding:24px;max-width:1200px;margin:0 auto;}
 
-  /* 빈 상태 */
-  .empty { text-align:center; padding:60px 20px; color:#444; font-size:14px; }
+  /* 사진 갤러리 */
+  .gallery-section{margin-bottom:32px;}
+  .section-title{font-size:13px;font-family:'DM Mono',monospace;color:#82B4FF;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #2a3a4a;}
+  .gallery-wrap{position:relative;background:#1e2d3a;border-radius:12px;overflow:hidden;}
+  .gallery-stage{display:flex;overflow:hidden;}
+  .gallery-slide{flex:0 0 100%;position:relative;}
+  .gallery-slide img{width:100%;height:360px;object-fit:cover;display:block;}
+  .gallery-info{position:absolute;bottom:0;left:0;right:0;padding:12px 16px;background:linear-gradient(transparent,rgba(0,0,0,.7));display:flex;justify-content:space-between;align-items:flex-end;}
+  .gallery-author{font-size:13px;color:#fff;font-weight:600;}
+  .gallery-counter{font-family:'DM Mono',monospace;font-size:12px;color:rgba(255,255,255,.7);}
+  .gallery-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);border:none;color:#fff;font-size:20px;padding:12px 16px;cursor:pointer;z-index:10;transition:background .18s;}
+  .gallery-btn:hover{background:rgba(0,0,0,.8);}
+  .gallery-prev{left:0;border-radius:0 6px 6px 0;}
+  .gallery-next{right:0;border-radius:6px 0 0 6px;}
+  .gallery-empty{padding:40px;text-align:center;color:#555;font-size:14px;}
 
-  /* 자동 갱신 표시 */
-  .auto-label { font-size:10px; color:#555; }
+  /* 질문별 섹션 */
+  .q-section{margin-bottom:28px;}
+  .q-label{font-size:13px;color:#5DB882;font-weight:600;margin-bottom:12px;padding:8px 12px;background:rgba(45,106,79,.12);border-radius:6px;border-left:3px solid #5DB882;}
+  .q-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+  .r-card{background:#1e2d3a;border-radius:10px;padding:14px;border:1px solid #2a3a4a;}
+  .r-card-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .r-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .r-name{font-size:13px;font-weight:600;color:#f0f0f0;}
+  .r-job{font-size:11px;color:#888;margin-left:auto;}
+  .r-time{font-size:10px;color:#555;font-family:'DM Mono',monospace;}
+  .r-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+  .r-tag{padding:2px 8px;border-radius:10px;font-size:10px;background:rgba(255,255,255,.08);color:#ccc;}
+  .r-memo{font-size:13px;color:#ddd;line-height:1.6;}
+  .no-records{padding:30px;text-align:center;color:#555;font-size:13px;}
 
-  /* 프로젝터 모드 */
-  .proj-btn { padding:6px 14px; border:1px solid #5DB882; border-radius:6px; background:transparent; color:#5DB882; cursor:pointer; font-size:12px; }
-  body.projector .card-memo { font-size:16px; }
-  body.projector .card-name { font-size:16px; }
-  body.projector .card-tag  { font-size:13px; padding:3px 10px; }
-  body.projector .card-q    { font-size:13px; }
-  body.projector .feed      { grid-template-columns:repeat(auto-fill, minmax(380px,1fr)); gap:20px; }
+  body.projector .gallery-slide img{height:500px;}
+  body.projector .r-memo{font-size:16px;}
+  body.projector .r-name{font-size:16px;}
 </style>
 </head>
 <body>
 
-<!-- 로그인 -->
 <div id="login-screen">
   <div class="login-box">
     <h1>🏛 관리자 로그인<br><small style="font-size:12px;color:#666;">2026 건축기행 · 진주</small></h1>
@@ -75,16 +82,13 @@
   </div>
 </div>
 
-<!-- 대시보드 -->
 <div id="dashboard">
   <div class="top-bar">
     <h1>🏛 2026 건축기행 진주 — 현장 기록</h1>
-    <span class="auto-label" id="auto-label">30초 자동 갱신</span>
     <span class="total-badge" id="total-badge">0건</span>
     <button class="proj-btn" onclick="toggleProjector()">📽 프로젝터</button>
     <button class="refresh-btn" onclick="loadData()">↺ 새로고침</button>
   </div>
-
   <div class="tabs" id="tabs">
     <div class="tab on" data-bldg="전체" onclick="switchTab(this)">전체</div>
     <div class="tab" data-bldg="진양호 우드랜드" onclick="switchTab(this)">우드랜드</div>
@@ -93,109 +97,150 @@
     <div class="tab" data-bldg="진주성" onclick="switchTab(this)">진주성</div>
     <div class="tab" data-bldg="진주실크박물관" onclick="switchTab(this)">실크박물관</div>
   </div>
-
-  <div class="feed" id="feed"></div>
+  <div class="content" id="content"></div>
 </div>
 
 <script>
-// ★ 배포 후 여기에 Apps Script URL 입력
 var GAS_URL = '/api/feed';
-
 var BLDG_COLORS = {
   '진양호 우드랜드':'#7A6548','물빛나루쉼터':'#2D7D9A',
   '진주남강유등전시관':'#B5692E','진주성':'#5C5450','진주실크박물관':'#2D6A4F'
 };
-
 var currentKey = '';
 var currentBldg = '전체';
 var refreshTimer = null;
 var projectorMode = false;
+var galleryIdx = 0;
+var galleryPhotos = [];
 
 function login() {
   var pw = document.getElementById('pw-input').value;
   if (!pw) { alert('비밀번호를 입력해주세요.'); return; }
   currentKey = pw;
-
-  if (!GAS_URL) {
-    // GAS URL 미설정 시 데모 모드
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    showDemo();
-    return;
-  }
   loadData();
 }
 
 function loadData() {
-  if (!GAS_URL) return;
-  fetch(GAS_URL + '?key=' + currentKey + '&building=' + encodeURIComponent(currentBldg))
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
+  var url = GAS_URL + '?key=' + currentKey + '&building=' + encodeURIComponent(currentBldg);
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
       if (!data.ok) { alert('오류: ' + data.error); return; }
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
-      renderFeed(data.data || []);
+      renderContent(data.data || []);
       document.getElementById('total-badge').textContent = (data.total || 0) + '건';
-      document.getElementById('auto-label').textContent = new Date().toLocaleTimeString('ko-KR') + ' 갱신';
     })
-    .catch(function(err) { alert('연결 오류. GAS URL을 확인해주세요.'); console.error(err); });
+    .catch(function(err){ alert('연결 오류: ' + err.message); });
 
   clearTimeout(refreshTimer);
   refreshTimer = setTimeout(loadData, 30000);
 }
 
 function switchTab(el) {
-  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
   el.classList.add('on');
   currentBldg = el.dataset.bldg;
   loadData();
 }
 
-function renderFeed(records) {
-  var feed = document.getElementById('feed');
+function renderContent(records) {
+  var content = document.getElementById('content');
   if (!records.length) {
-    feed.innerHTML = '<div class="empty">아직 제출된 기록이 없습니다.</div>';
+    content.innerHTML = '<div class="no-records">아직 제출된 기록이 없습니다.</div>';
     return;
   }
-  feed.innerHTML = records.map(function(r) {
-    var bldg = r['건물'] || r['건물명'] || currentBldg;
-    var job = r['호차'] || '';
-    var color = BLDG_COLORS[bldg] || '#607282';
-    var tags = (r['태그']||'').split('/').filter(Boolean);
-    var tagsHtml = tags.map(function(t) {
-      return '<span class="card-tag">' + t.trim() + '</span>';
-    }).join('');
-    var q = r['질문'] ? '<div class="card-q">🔍 ' + r['질문'].split('—')[0].trim() + '</div>' : '';
-    var memo = r['소감'] ? '<div class="card-memo">' + r['소감'] + '</div>' : '';
-    var photoUrls = r['사진URL'] ? r['사진URL'].split(' | ').filter(Boolean) : [];
-    var photoGallery = '';
-    if (photoUrls.length > 0) {
-      var imgs = photoUrls.map(function(url) {
-        return '<a href="' + url + '" target="_blank">'
-          + '<img src="' + url + '" style="width:80px;height:80px;object-fit:cover;border-radius:6px;cursor:pointer;">'
-          + '</a>';
-      }).join('');
-      photoGallery = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">' + imgs + '</div>';
+
+  // 사진 수집 (건물별 전체 합산)
+  var allPhotos = [];
+  records.forEach(function(r) {
+    var urls = (r['사진URL'] || '').split(' | ').filter(Boolean);
+    urls.forEach(function(url) {
+      allPhotos.push({ url: url, name: r['이름'] || '익명', job: r['호차'] || '', bldg: r['건물'] || '' });
+    });
+  });
+
+  // 질문별 그룹핑
+  var qGroups = {};
+  records.forEach(function(r) {
+    var q = (r['질문'] || '').trim() || '질문 없음 (간편 기록)';
+    if (!qGroups[q]) qGroups[q] = [];
+    qGroups[q].push(r);
+  });
+
+  var html = '';
+
+  // 사진 갤러리
+  html += '<div class="gallery-section">';
+  html += '<p class="section-title">📷 사진 갤러리 — ' + allPhotos.length + '장</p>';
+  if (allPhotos.length > 0) {
+    html += '<div class="gallery-wrap">';
+    html += '<div class="gallery-stage" id="gallery-stage">';
+    allPhotos.forEach(function(p, i) {
+      var bldgLabel = p.bldg ? ' · ' + p.bldg : '';
+      html += '<div class="gallery-slide">'
+        + '<img src="' + p.url + '" alt="" loading="lazy">'
+        + '<div class="gallery-info">'
+        + '<span class="gallery-author">' + p.name + (p.job ? ' · ' + p.job : '') + bldgLabel + '</span>'
+        + '<span class="gallery-counter">' + (i+1) + ' / ' + allPhotos.length + '</span>'
+        + '</div></div>';
+    });
+    html += '</div>';
+    if (allPhotos.length > 1) {
+      html += '<button class="gallery-btn gallery-prev" onclick="galleryMove(-1)">‹</button>';
+      html += '<button class="gallery-btn gallery-next" onclick="galleryMove(1)">›</button>';
     }
-    var mode = r['모드'] === 'expert' ? '<span class="card-mode">전문</span>' : '';
-    return '<div class="card">'
-      + '<div class="card-top" style="border-top:3px solid ' + color + ';">'
-      + '<div class="card-dot" style="background:' + color + ';"></div>'
-      + '<span class="card-name">' + (r['이름']||'익명') + '</span>'
-      + '<span class="card-bus">' + (r['호차']||'') + '</span>'
-      + '<span class="card-time">' + (r['시각']||'') + '</span>'
-      + '</div>'
-      + '<div class="card-body">' + mode + q
-      + (tagsHtml ? '<div class="card-tags">' + tagsHtml + '</div>' : '')
-      + memo
-      + photoGallery + '</div></div>';
-  }).join('');
+    html += '</div>';
+  } else {
+    html += '<div class="gallery-empty">사진이 없습니다.</div>';
+  }
+  html += '</div>';
+
+  // 질문별 텍스트 기록
+  html += '<div class="section-title" style="margin-bottom:20px;">💬 질문별 기록</div>';
+  Object.keys(qGroups).forEach(function(q) {
+    var group = qGroups[q];
+    html += '<div class="q-section">';
+    html += '<div class="q-label">' + q + '</div>';
+    html += '<div class="q-cards">';
+    group.forEach(function(r) {
+      var bldg = r['건물'] || currentBldg;
+      var color = BLDG_COLORS[bldg] || '#607282';
+      var tags = (r['태그'] || '').split('/').filter(Boolean);
+      var tagsHtml = tags.map(function(t){ return '<span class="r-tag">' + t.trim() + '</span>'; }).join('');
+      html += '<div class="r-card">'
+        + '<div class="r-card-header">'
+        + '<div class="r-dot" style="background:' + color + '"></div>'
+        + '<span class="r-name">' + (r['이름'] || '익명') + '</span>'
+        + '<span class="r-job">' + (r['호차'] || '') + '</span>'
+        + '</div>'
+        + (tagsHtml ? '<div class="r-tags">' + tagsHtml + '</div>' : '')
+        + (r['소감'] ? '<div class="r-memo">' + r['소감'] + '</div>' : '')
+        + '<div class="r-time">' + (r['시각'] || '') + '</div>'
+        + '</div>';
+    });
+    html += '</div></div>';
+  });
+
+  content.innerHTML = html;
+
+  // 갤러리 초기화
+  galleryPhotos = allPhotos;
+  galleryIdx = 0;
+  updateGallery();
 }
 
-function showDemo() {
-  document.getElementById('total-badge').textContent = 'GAS URL 미설정';
-  document.getElementById('feed').innerHTML =
-    '<div class="empty">admin.html 상단 GAS_URL에<br>배포된 Apps Script URL을 넣어주세요.</div>';
+function galleryMove(dir) {
+  if (!galleryPhotos.length) return;
+  galleryIdx = (galleryIdx + dir + galleryPhotos.length) % galleryPhotos.length;
+  updateGallery();
+}
+
+function updateGallery() {
+  var stage = document.getElementById('gallery-stage');
+  if (!stage) return;
+  stage.style.transform = 'translateX(-' + (galleryIdx * 100) + '%)';
+  stage.style.transition = 'transform .3s ease';
 }
 
 function toggleProjector() {
