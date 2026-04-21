@@ -1265,7 +1265,7 @@ var bldgQuestions = {
 // ── 기록 모드 ─────────────────────────────────────
 var currentMode = 'simple';
 // ★ 공식 제출 엔드포인트 — Google Apps Script 배포 후 URL 교체
-var SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbzWaYhfqvnzmjkC6e7F800Ev0uYR0to4Mw6h-lkt_tjwnK0ndRs_beFQcQFk4Z6LDeA/exec';
+var SUBMIT_URL = '/api/submit';
 var IMGBB_KEY  = '37f6a684bc6dc53c38556f2963a2ad98';
 
 function setMode(mode) {
@@ -1617,15 +1617,18 @@ function submitRecord() {
     }, 3000);
   }
 
-  // ③ GAS 전송 백그라운드 (fetch no-cors)
+  // ③ GAS 전송 — Vercel API 경유 (정식 POST)
   if (SUBMIT_URL) {
     payload.photos = []; payload.photoUrls = [];
     fetch(SUBMIT_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'text/plain'},
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(payload)
-    }).catch(function(){});
+    }).then(function(r){ return r.json(); })
+    .then(function(data){
+      if (!data.ok) console.warn('제출 오류:', data.error);
+    })
+    .catch(function(e){ console.warn('전송 실패:', e); });
 
     // ④ 사진 imgbb 백그라운드 업로드
     if (pendingFiles.length > 0) {
@@ -1635,12 +1638,11 @@ function submitRecord() {
       setTimeout(function() {
         uploadPhotosToImgbb(_photos, function(photoUrls) {
           if (!photoUrls.length) return;
-          try {
-            navigator.sendBeacon(SUBMIT_URL,
-              new Blob([JSON.stringify({building:_bldg, sessionId:_id,
-                photoUrls:photoUrls, updatePhotos:true})],
-                {type:'application/json'}));
-          } catch(e) {}
+          fetch(SUBMIT_URL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({building:_bldg, sessionId:_id, photoUrls:photoUrls, updatePhotos:true})
+          }).catch(function(){});
         });
       }, 1000);
     }
