@@ -1665,7 +1665,13 @@ function submitRecord() {
       body: JSON.stringify(payload)
     }).then(function(r){ return r.json(); })
     .then(function(data){
-      if (!data.ok) console.warn('제출 오류:', data.error);
+      if (!data.ok) {
+        if (data.error && data.error.includes('종료')) {
+          showRecordToast('⛔ ' + data.error, 'error');
+        } else {
+          console.warn('제출 오류:', data.error);
+        }
+      }
     })
     .catch(function(e){ console.warn('전송 실패:', e); });
 
