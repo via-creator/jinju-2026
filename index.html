@@ -1619,7 +1619,26 @@ function submitRecord() {
 
   // ③ GAS 전송 — Vercel API 경유 (정식 POST)
   if (SUBMIT_URL) {
-    payload.photos = []; payload.photoUrls = [];
+    var nameVal = (document.getElementById('name-in').value || '').trim();
+    var busVal  = document.getElementById('bus-sel').value || '';
+    var qaIdx2  = document.getElementById('qa-sel') ? document.getElementById('qa-sel').value : '';
+    var selQ2   = '';
+    if (qaIdx2 !== '' && bldgQAs[bldg]) {
+      var qi2 = bldgQAs[bldg][parseInt(qaIdx2)];
+      if (qi2) selQ2 = qi2.q;
+    }
+    var payload = {
+      name:      nameVal || '익명',
+      bus:       busVal,
+      building:  bldg,
+      mode:      currentMode,
+      question:  selQ2,
+      tags:      tags.join(' / '),
+      memo:      memo,
+      sessionId: myId,
+      photos:    [],
+      photoUrls: []
+    };
     fetch(SUBMIT_URL, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
