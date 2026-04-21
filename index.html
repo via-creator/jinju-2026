@@ -1683,10 +1683,17 @@ function submitRecord() {
       setTimeout(function() {
         uploadPhotosToImgbb(_photos, function(photoUrls) {
           if (!photoUrls.length) return;
+          var nameEl = document.getElementById('name-in');
+          var busEl  = document.getElementById('bus-sel');
           fetch(SUBMIT_URL, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({building:_bldg, sessionId:_id, photoUrls:photoUrls, updatePhotos:true})
+            body: JSON.stringify({
+              building:_bldg, sessionId:_id,
+              photoUrls:photoUrls, updatePhotos:true,
+              name: nameEl ? (nameEl.value||'익명') : '익명',
+              bus:  busEl  ? (busEl.value||'')      : ''
+            })
           }).catch(function(){});
         });
       }, 1000);
