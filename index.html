@@ -1596,72 +1596,54 @@ function submitRecord() {
     photoCount: pendingFiles.length > 0 ? pendingFiles.length : (existing ? existing.photoCount || 0 : 0),
     time: timeStr, edited: !!existing
   };
-  // 버튼 상태 변경
-  var submitBtn = document.getElementById('btn-submit');
-  if (submitBtn) { submitBtn.textContent = '전송 중...'; submitBtn.className = 'btn-submit sending'; submitBtn.disabled = true; }
-
-  // 제출 완료 상태로 업데이트
+  // ① 로컬 즉시 저장
   if (!myRecords[bldg]) myRecords[bldg] = {};
   myRecords[bldg].status = 'submitted';
   saveToStorage();
 
-  // 텍스트 즉시 GAS 제출 (사진 없이)
-  payload.photos    = [];
-  payload.photoUrls = [];
+  // ② 즉시 성공 표시 (GAS 응답 안 기다림)
+  var submitBtn = document.getElementById('btn-submit');
+  showRecordToast('✅ ' + bldg + ' 기록 저장됐습니다!', 'success');
+  if (submitBtn) {
+    submitBtn.textContent = '제출 완료 ✅';
+    submitBtn.className = 'btn-submit success';
+    submitBtn.disabled = false;
+    setTimeout(function() {
+      submitBtn.textContent = '기록 남기기 →';
+      submitBtn.className = 'btn-submit';
+    }, 3000);
+  }
 
-  // 동시에 GAS 공식 제출
+  // ③ GAS 전송 완전 백그라운드
   if (SUBMIT_URL) {
-    var nameVal = (document.getElementById('name-in').value || '').trim();
-    var busVal  = document.getElementById('bus-sel').value || '';
-    var qaIdx2  = document.getElementById('qa-sel').value;
-    var selQ2 = '', selA2 = '';
-    if (qaIdx2 !== '' && bldgQAs[bldg]) {
-      var qi2 = bldgQAs[bldg][parseInt(qaIdx2)];
-      if (qi2) { selQ2 = qi2.q; selA2 = qi2.a; }
+    payload.photos = []; payload.photoUrls = [];
+    try {
+      navigator.sendBeacon(SUBMIT_URL,
+        new Blob([JSON.stringify(payload)], {type:'application/json'}));
+    } catch(e) {
+      fetch(SUBMIT_URL, {method:'POST', mode:'no-cors',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)}).catch(function(){});
     }
-    var rec     = myRecords[bldg] || {};
-    var photos  = (rec.photos || []).map(function(p){ return {src:p.src}; });
-    var payload = {
-      name: nameVal || '익명', bus: busVal, building: bldg,
-      mode: currentMode, question: selQ2, tags: tags.join(' / '),
-      memo: memo, photos: photos,
-      timestamp: new Date().toLocaleString('ko-KR'), sessionId: myId
-    };
-    fetch(SUBMIT_URL, {
-      method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    }).then(function() {
-      showRecordToast('✅ ' + bldg + ' 기록이 제출됐습니다!', 'success');
-      var sb = document.getElementById('btn-submit');
-      if (sb) { sb.textContent = '제출 완료 ✅'; sb.className = 'btn-submit success'; sb.disabled = false; }
+
+    // ④ 사진 imgbb 백그라운드 업로드
+    if (pendingFiles.length > 0) {
+      var _photos = pendingFiles.slice();
+      var _bldg   = bldg;
+      var _id     = myId;
       setTimeout(function() {
-        if (sb) { sb.textContent = '기록 남기기 →'; sb.className = 'btn-submit'; }
-      }, 3000);
-      // 백그라운드에서 사진 업로드 (결과 기다리지 않음)
-      if (pendingFiles.length > 0) {
-        uploadPhotosToImgbb(pendingFiles.slice(), function(photoUrls) {
-          if (photoUrls.length === 0) return;
-          // 사진 URL을 별도로 GAS에 추가 전송
-          fetch(SUBMIT_URL, {
-            method:'POST', mode:'no-cors',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({
-              building: bldg, sessionId: myId,
-              photoUrls: photoUrls, updatePhotos: true
-            })
-          }).catch(function(){});
+        uploadPhotosToImgbb(_photos, function(photoUrls) {
+          if (!photoUrls.length) return;
+          try {
+            navigator.sendBeacon(SUBMIT_URL,
+              new Blob([JSON.stringify({building:_bldg, sessionId:_id,
+                photoUrls:photoUrls, updatePhotos:true})],
+                {type:'application/json'}));
+          } catch(e) {}
         });
-      }
-    }).catch(function() {
-      showRecordToast('⚠ 전송 오류 — 로컬에는 저장됐습니다.', 'error');
-      var sb = document.getElementById('btn-submit');
-      if (sb) { sb.textContent = '다시 시도'; sb.className = 'btn-submit error'; sb.disabled = false; }
-      setTimeout(function() {
-        if (sb) { sb.textContent = '기록 남기기 →'; sb.className = 'btn-submit'; }
-      }, 4000);
-    });
-  } // SUBMIT_URL 없을 때 블록 닫기
+      }, 1000);
+    }
+  }
 
   // 폼 초기화
   document.getElementById('bldg-sel').value = '';
