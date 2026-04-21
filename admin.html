@@ -233,7 +233,12 @@ function render(rows){
     qMap[q].push(r);
   });
 
-  var qHtml='<div class="sec-head" style="margin-top:8px;"><span class="sec-icon">💬</span><span class="sec-label">질문별 기록</span><div class="sec-line"></div></div>';
+  var qHtml='<div class="sec-head" style="margin-top:8px;cursor:pointer;" onclick="toggleRecords()">'
+    +'<span class="sec-icon">💬</span><span class="sec-label">질문별 기록</span>'
+    +'<div class="sec-line"></div>'
+    +'<span id="rec-toggle-btn" style="font-size:12px;color:var(--text-3);font-family:DM Mono,monospace;white-space:nowrap;margin-left:8px;">접기 ↑</span>'
+    +'</div>'
+    +'<div id="rec-body">';
   Object.keys(qMap).forEach(function(q){
     qHtml+='<div class="q-block"><div class="q-label">'+q+'</div><div class="cards">';
     qMap[q].forEach(function(r){
@@ -250,6 +255,7 @@ function render(rows){
     qHtml+='</div></div>';
   });
 
+  if(rows.length) qHtml+='</div>'; // rec-body 닫기
   wrap.innerHTML=galHtml+(rows.length?qHtml:'<div class="no-data">아직 기록이 없습니다.</div>');
 
   // 터치 스와이프
@@ -325,6 +331,19 @@ document.addEventListener('keydown',function(e){
 });
 
 function toggleProj(){document.body.classList.toggle('proj');}
+
+function toggleRecords(){
+  var body = document.getElementById('rec-body');
+  var btn  = document.getElementById('rec-toggle-btn');
+  if(!body) return;
+  if(body.style.display === 'none'){
+    body.style.display = '';
+    btn.textContent = '접기 ↑';
+  } else {
+    body.style.display = 'none';
+    btn.textContent = '펼치기 ↓';
+  }
+}
 </script>
 </body>
 </html>
