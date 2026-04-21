@@ -501,6 +501,23 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
 .notice-tip{font-size:12px;color:var(--muted);margin:-4px 0 12px;}
 
 .photo-guide{font-size:11px;color:var(--muted);margin:-2px 0 8px;}
+
+/* ── 임시저장 버튼 ── */
+.btn-draft{
+  width:100%;padding:12px;margin-bottom:8px;
+  background:#fff;color:var(--charcoal);
+  border:1.5px solid #c4cad4;border-radius:var(--r);
+  font-family:"Noto Sans KR",sans-serif;font-size:14px;
+  font-weight:500;cursor:pointer;transition:all .18s;
+}
+.btn-draft:hover{background:#f0f2f4;border-color:#a0a8b4;}
+/* 하단 카드 상태 표시 */
+.slot-card.draft .slot-bldg-name::after{
+  content:' · 작성중';font-size:10px;color:#aaa;font-weight:400;
+}
+.slot-card.submitted .slot-bldg-name::after{
+  content:' · 제출완료 ✅';font-size:10px;color:var(--viridian);font-weight:400;
+}
 </style>
 </head>
 <body>
@@ -1177,7 +1194,8 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
         <textarea class="form-textarea" id="memo-in" rows="2"
           placeholder="공간읽기 질문을 선택하거나, 떠오른 생각을 자유롭게 적어도 됩니다."></textarea>
       </div>
-      <button class="btn-submit" onclick="submitRecord()">기록 남기기 →</button>
+      <button class="btn-draft" id="btn-draft" onclick="saveDraft()">임시저장</button>
+      <button class="btn-submit" id="btn-submit" onclick="submitRecord()">기록 남기기 →</button>
 
     </div>
     <div id="record-count" class="record-count" style="display:none;"></div>
@@ -1238,7 +1256,8 @@ var bldgQuestions = {
 // ── 기록 모드 ─────────────────────────────────────
 var currentMode = 'simple';
 // ★ 공식 제출 엔드포인트 — Google Apps Script 배포 후 URL 교체
-var SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbzcAubtN8yDsn0K7gOHXtHb0v00j7-Cx9AMnqL06TuEk5XuPSkj4b_hCwhuS2A76PgA/exec';
+var SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbzWaYhfqvnzmjkC6e7F800Ev0uYR0to4Mw6h-lkt_tjwnK0ndRs_beFQcQFk4Z6LDeA/exec';
+var IMGBB_KEY  = '37f6a684bc6dc53c38556f2963a2ad98';
 
 function setMode(mode) {
   currentMode = mode;
@@ -1504,6 +1523,37 @@ function renderPreview() {
       + '<button class="preview-del" onclick="removePreview(\'' + f.id + '\')" title="삭제">✕</button>';
     strip.appendChild(thumb);
   });
+
+  // 5장 도달 시 업로드 버튼 비활성화
+  var isFull = pendingFiles.length >= MAX_PHOTOS;
+  ['photo-camera','photo-gallery'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.disabled = isFull;
+    var label = el.closest('label');
+    if (label) {
+      label.style.opacity = isFull ? '0.4' : '1';
+      label.style.pointerEvents = isFull ? 'none' : 'auto';
+    }
+  });
+
+  // 사진 수 안내 텍스트
+  var countNote = document.getElementById('photo-count-note');
+  if (!countNote) {
+    countNote = document.createElement('p');
+    countNote.id = 'photo-count-note';
+    countNote.style.cssText = 'font-size:11px;margin:5px 0 0;';
+    if (strip.parentNode) strip.parentNode.insertBefore(countNote, strip.nextSibling);
+  }
+  if (pendingFiles.length === 0) {
+    countNote.textContent = '';
+  } else if (isFull) {
+    countNote.style.color = 'var(--cobalt)';
+    countNote.textContent = '📷 ' + MAX_PHOTOS + '/' + MAX_PHOTOS + '장 — 최대 장수입니다';
+  } else {
+    countNote.style.color = 'var(--muted)';
+    countNote.textContent = pendingFiles.length + '/' + MAX_PHOTOS + '장';
+  }
 }
 
 // ── 기록 제출 ────────────────────────────────────
@@ -1536,7 +1586,21 @@ function submitRecord() {
     photoCount: pendingFiles.length > 0 ? pendingFiles.length : (existing ? existing.photoCount || 0 : 0),
     time: timeStr, edited: !!existing
   };
+  // 버튼 상태 변경
+  var submitBtn = document.getElementById('btn-submit');
+  if (submitBtn) { submitBtn.textContent = '사진 업로드 중...'; submitBtn.disabled = true; }
+
+  // 제출 완료 상태로 업데이트
+  if (!myRecords[bldg]) myRecords[bldg] = {};
+  myRecords[bldg].status = 'submitted';
   saveToStorage();
+
+  // 사진 imgbb 업로드 후 GAS 전송
+  var currentPhotos = pendingFiles.slice();
+  uploadPhotosToImgbb(currentPhotos, function(photoUrls) {
+    if (submitBtn) submitBtn.textContent = '기록 전송 중...';
+    payload.photos    = [];
+    payload.photoUrls = photoUrls;
 
   // 동시에 GAS 공식 제출
   if (SUBMIT_URL) {
@@ -1560,8 +1624,17 @@ function submitRecord() {
       method:'POST', mode:'no-cors',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify(payload)
-    }).catch(function() {});
-  }
+    }).then(function() {
+      showRecordToast('✅ ' + bldg + ' 기록이 제출됐습니다!', 'success');
+    }).catch(function() {
+      showRecordToast('⚠ 전송 오류 — 로컬에는 저장됐습니다.', 'error');
+    }).finally(function() {
+      var sb = document.getElementById('btn-submit');
+      if (sb) { sb.textContent = '기록 남기기 →'; sb.disabled = false; }
+    });
+  } // SUBMIT_URL 없을 때 블록 닫기
+
+  }); // uploadPhotosToImgbb 콜백 닫기
 
   // 폼 초기화
   document.getElementById('bldg-sel').value = '';
@@ -1794,6 +1867,110 @@ function showToast(msg, duration) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(function(){ toast.style.display = 'none'; }, duration || 2500);
 }
+// ── 기록 제출 토스트 ──────────────────────────
+// ── 임시저장 ──────────────────────────────────
+function saveDraft() {
+  var bldg = document.getElementById('bldg-sel').value;
+  if (!bldg) { alert('방문 건물을 선택해주세요.'); return; }
+
+  var memo  = document.getElementById('memo-in').value.trim();
+  var tags  = getSelectedTags();
+  var qaIdx = document.getElementById('qa-sel') ? document.getElementById('qa-sel').value : '';
+  var selQ  = '';
+  if (qaIdx !== '' && bldgQAs[bldg]) {
+    var qi = bldgQAs[bldg][parseInt(qaIdx)];
+    if (qi) selQ = qi.q;
+  }
+
+  if (!myRecords[bldg]) myRecords[bldg] = {};
+  myRecords[bldg].building  = bldg;
+  myRecords[bldg].memo      = memo;
+  myRecords[bldg].tags      = tags;
+  myRecords[bldg].question  = selQ;
+  myRecords[bldg].photos    = pendingFiles.slice();
+  myRecords[bldg].status    = 'draft';  // ← 임시저장 상태
+  myRecords[bldg].updatedAt = new Date().toLocaleString('ko-KR');
+
+  try {
+    var save = {};
+    Object.keys(myRecords).forEach(function(k) {
+      save[k] = Object.assign({}, myRecords[k]);
+      save[k].photos = (myRecords[k].photos||[]).map(function(p){
+        return {id:p.id, name:p.name, src:p.src};
+      });
+    });
+    localStorage.setItem('archivia_records_' + myId, JSON.stringify(save));
+  } catch(e) {}
+
+  showRecordToast('💾 ' + bldg + ' 임시저장됐습니다', 'draft');
+  renderFeed();
+}
+
+// ── imgbb 사진 업로드 ─────────────────────────
+function uploadPhotosToImgbb(photos, callback) {
+  if (!photos || photos.length === 0) { callback([]); return; }
+  var urls = [];
+  var done = 0;
+  photos.forEach(function(photo, i) {
+    var base64 = photo.src.split(',')[1];
+    var fd = new FormData();
+    fd.append('key', IMGBB_KEY);
+    fd.append('image', base64);
+    fd.append('name', 'jinju2026_' + Date.now() + '_' + i);
+
+    fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST', body: fd
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.success) {
+        urls[i] = data.data.display_url;
+      } else {
+        urls[i] = '';
+      }
+    })
+    .catch(function(){ urls[i] = ''; })
+    .finally(function(){
+      done++;
+      if (done === photos.length) callback(urls.filter(Boolean));
+    });
+  });
+}
+
+function showRecordToast(msg, type) {
+  var existing = document.getElementById('record-toast');
+  if (existing) existing.remove();
+
+  var toast = document.createElement('div');
+  toast.id = 'record-toast';
+  toast.textContent = msg;
+  toast.style.cssText = [
+    'position:fixed',
+    'bottom:100px',
+    'left:50%',
+    'transform:translateX(-50%)',
+    'padding:14px 22px',
+    'border-radius:28px',
+    'font-size:14px',
+    'font-weight:600',
+    'z-index:10000',
+    'box-shadow:0 4px 20px rgba(0,0,0,.25)',
+    'white-space:nowrap',
+    'transition:opacity .3s',
+    type === 'success'
+      ? 'background:#2D6A4F;color:#fff'
+      : type === 'draft'
+      ? 'background:#2F3E46;color:#fff'
+      : 'background:#c0392b;color:#fff'
+  ].join(';');
+
+  document.body.appendChild(toast);
+  setTimeout(function() {
+    toast.style.opacity = '0';
+    setTimeout(function() { toast.remove(); }, 300);
+  }, 3000);
+}
+
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
