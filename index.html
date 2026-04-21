@@ -1617,17 +1617,15 @@ function submitRecord() {
     }, 3000);
   }
 
-  // ③ GAS 전송 완전 백그라운드
+  // ③ GAS 전송 백그라운드 (fetch no-cors)
   if (SUBMIT_URL) {
     payload.photos = []; payload.photoUrls = [];
-    try {
-      navigator.sendBeacon(SUBMIT_URL,
-        new Blob([JSON.stringify(payload)], {type:'application/json'}));
-    } catch(e) {
-      fetch(SUBMIT_URL, {method:'POST', mode:'no-cors',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload)}).catch(function(){});
-    }
+    fetch(SUBMIT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify(payload)
+    }).catch(function(){});
 
     // ④ 사진 imgbb 백그라운드 업로드
     if (pendingFiles.length > 0) {
