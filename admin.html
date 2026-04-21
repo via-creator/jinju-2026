@@ -239,8 +239,15 @@ function render(rows){
     +'<span id="rec-toggle-btn" style="font-size:12px;color:var(--text-3);font-family:DM Mono,monospace;white-space:nowrap;margin-left:8px;">접기 ↑</span>'
     +'</div>'
     +'<div id="rec-body">';
+  var qIdx=0;
   Object.keys(qMap).forEach(function(q){
-    qHtml+='<div class="q-block"><div class="q-label">'+q+'</div><div class="cards">';
+    var bid='qb-'+qIdx; qIdx++;
+    qHtml+='<div class="q-block">'
+      +'<div class="q-label" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleQ(''+bid+'')">'
+      +'<span>'+q+'</span>'
+      +'<span id="'+bid+'-btn" style="font-family:DM Mono,monospace;font-size:11px;color:var(--text-3);margin-left:12px;flex-shrink:0;">접기 ↑</span>'
+      +'</div>'
+      +'<div id="'+bid+'" class="cards">';
     qMap[q].forEach(function(r){
       var color=COLORS[r['건물']]||'#607282';
       var tags=(r['태그']||'').split('/').filter(Boolean).map(function(t){return '<span class="tag">'+t.trim()+'</span>';}).join('');
@@ -331,6 +338,19 @@ document.addEventListener('keydown',function(e){
 });
 
 function toggleProj(){document.body.classList.toggle('proj');}
+
+function toggleQ(bid){
+  var body=document.getElementById(bid);
+  var btn=document.getElementById(bid+'-btn');
+  if(!body)return;
+  if(body.style.display==='none'){
+    body.style.display='';
+    if(btn)btn.textContent='접기 ↑';
+  } else {
+    body.style.display='none';
+    if(btn)btn.textContent='펼치기 ↓';
+  }
+}
 
 function toggleRecords(){
   var body = document.getElementById('rec-body');
