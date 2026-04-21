@@ -1147,6 +1147,22 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
         <button class="edit-cancel" onclick="cancelEdit()">취소</button>
       </div>
       <!-- 방문한 건물 -->
+      <!-- 이름 + 호차 -->
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div>
+          <label class="form-label">이름 <span style="font-weight:normal;opacity:.5">(선택)</span></label>
+          <input type="text" class="form-input" id="name-in" placeholder="홍길동" maxlength="20">
+        </div>
+        <div>
+          <label class="form-label">호차</label>
+          <select class="form-select" id="bus-sel">
+            <option value="">선택</option>
+            <option>1호차</option>
+            <option>2호차</option>
+            <option>3호차</option>
+          </select>
+        </div>
+      </div>
       <div class="form-row">
         <label class="form-label">방문한 건물</label>
         <select class="form-select" id="bldg-sel" onchange="onBldgChange()">
@@ -1619,8 +1635,10 @@ function submitRecord() {
 
   // ③ GAS 전송 — Vercel API 경유 (정식 POST)
   if (SUBMIT_URL) {
-    var nameVal = (document.getElementById('name-in').value || '').trim();
-    var busVal  = document.getElementById('bus-sel').value || '';
+    var nameEl = document.getElementById('name-in');
+    var busEl  = document.getElementById('bus-sel');
+    var nameVal = nameEl ? (nameEl.value || '').trim() : '';
+    var busVal  = busEl  ? (busEl.value  || '')         : '';
     var qaIdx2  = document.getElementById('qa-sel') ? document.getElementById('qa-sel').value : '';
     var selQ2   = '';
     if (qaIdx2 !== '' && bldgQAs[bldg]) {
