@@ -1283,6 +1283,8 @@ var currentMode = 'simple';
 // ★ 공식 제출 엔드포인트 — Google Apps Script 배포 후 URL 교체
 var SUBMIT_URL = '/api/submit';
 var IMGBB_KEY  = '37f6a684bc6dc53c38556f2963a2ad98';
+var myId = 'u_' + Math.random().toString(36).substr(2, 9);
+var IMGBB_KEY  = '37f6a684bc6dc53c38556f2963a2ad98';
 
 function setMode(mode) {
   currentMode = mode;
