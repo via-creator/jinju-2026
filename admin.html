@@ -243,7 +243,7 @@ function render(rows){
   Object.keys(qMap).forEach(function(q){
     var bid='qb-'+qIdx; qIdx++;
     qHtml+='<div class="q-block">'
-      +'<div class="q-label" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleQ(''+bid+'')">'
+      +'<div class="q-label" data-bid="'+bid+'" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleQ(this)">'
       +'<span>'+q+'</span>'
       +'<span id="'+bid+'-btn" style="font-family:DM Mono,monospace;font-size:11px;color:var(--text-3);margin-left:12px;flex-shrink:0;">접기 ↑</span>'
       +'</div>'
@@ -339,7 +339,8 @@ document.addEventListener('keydown',function(e){
 
 function toggleProj(){document.body.classList.toggle('proj');}
 
-function toggleQ(bid){
+function toggleQ(el){
+  var bid=el.dataset.bid;
   var body=document.getElementById(bid);
   var btn=document.getElementById(bid+'-btn');
   if(!body)return;
