@@ -159,6 +159,7 @@ function renderFeed(records) {
   }
   feed.innerHTML = records.map(function(r) {
     var bldg = r['건물'] || r['건물명'] || currentBldg;
+    var job = r['호차'] || '';
     var color = BLDG_COLORS[bldg] || '#607282';
     var tags = (r['태그']||'').split('/').filter(Boolean);
     var tagsHtml = tags.map(function(t) {
@@ -166,6 +167,16 @@ function renderFeed(records) {
     }).join('');
     var q = r['질문'] ? '<div class="card-q">🔍 ' + r['질문'].split('—')[0].trim() + '</div>' : '';
     var memo = r['소감'] ? '<div class="card-memo">' + r['소감'] + '</div>' : '';
+    var photoUrls = r['사진URL'] ? r['사진URL'].split(' | ').filter(Boolean) : [];
+    var photoGallery = '';
+    if (photoUrls.length > 0) {
+      var imgs = photoUrls.map(function(url) {
+        return '<a href="' + url + '" target="_blank">'
+          + '<img src="' + url + '" style="width:80px;height:80px;object-fit:cover;border-radius:6px;cursor:pointer;">'
+          + '</a>';
+      }).join('');
+      photoGallery = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">' + imgs + '</div>';
+    }
     var mode = r['모드'] === 'expert' ? '<span class="card-mode">전문</span>' : '';
     return '<div class="card">'
       + '<div class="card-top" style="border-top:3px solid ' + color + ';">'
@@ -176,7 +187,8 @@ function renderFeed(records) {
       + '</div>'
       + '<div class="card-body">' + mode + q
       + (tagsHtml ? '<div class="card-tags">' + tagsHtml + '</div>' : '')
-      + memo + '</div></div>';
+      + memo
+      + photoGallery + '</div></div>';
   }).join('');
 }
 
