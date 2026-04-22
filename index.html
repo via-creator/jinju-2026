@@ -5,7 +5,8 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-<meta name="viewport" content="width=device-width, initial-scal
+<meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scal
 /* ── 이동 정보 ── */
 .transport-wrap{margin-bottom:28px;}
 .transport-title{font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
@@ -327,6 +328,37 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
 
 /* ── 공간읽기 연동 ── */
 .qa-sel-row{margin-bottom:12px;display:block;}
+/* 내 조 찾기 */
+.my-group-wrap{background:#f8f9fb;border-radius:14px;padding:16px;margin-bottom:20px;}
+.my-group-label{font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.my-group-input{width:100%;padding:12px 14px;border:1.5px solid #dde0e6;border-radius:10px;font-size:16px;font-family:'Noto Sans KR',sans-serif;background:#fff;color:var(--text);box-sizing:border-box;outline:none;transition:border-color .2s;}
+.my-group-input:focus{border-color:var(--cobalt);}
+.group-result{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+.gr-card{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;}
+.gr-3{background:rgba(46,88,148,.08);border:1px solid rgba(46,88,148,.2);}
+.gr-4{background:rgba(45,106,79,.08);border:1px solid rgba(45,106,79,.2);}
+.gr-group{font-size:15px;font-weight:800;padding:4px 12px;border-radius:20px;flex-shrink:0;}
+.gr-3 .gr-group{background:var(--cobalt);color:#fff;}
+.gr-4 .gr-group{background:var(--viridian);color:#fff;}
+.gr-name{font-size:16px;font-weight:600;color:var(--text);flex:1;}
+.gr-region{font-size:13px;color:var(--muted);}
+.gr-none{font-size:14px;color:var(--muted);padding:8px 0;}
+/* 조별 일정 */
+.schedule-row-group .schedule-content{flex:1;}
+.group-badges{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
+.group-badge{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:10px;}
+.group-14{background:rgba(46,88,148,.10);border:1px solid rgba(46,88,148,.2);}
+.group-23{background:rgba(45,106,79,.10);border:1px solid rgba(45,106,79,.2);}
+.gb-label{font-size:13px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.group-14 .gb-label{background:var(--cobalt);color:#fff;}
+.group-23 .gb-label{background:var(--viridian);color:#fff;}
+.gb-content{font-size:13px;color:var(--text);line-height:1.6;flex:1;}
+.gb-content small{color:var(--muted);font-size:12px;}
+.gb-time{font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0;padding-top:2px;}
+/* 중요 공지 박스 */
+.notice-alert-box{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.nab-item{background:#fff8f0;border-left:4px solid #e67e22;border-radius:0 10px 10px 0;padding:12px 14px;font-size:14px;line-height:1.7;color:#333;}
+.nab-item small{font-size:12px;color:#777;}
 .qa-ref-wrap{margin-top:8px;display:none;}
 .qa-ref-toggle{width:100%;text-align:left;background:rgba(45,106,79,.07);border:none;border-radius:var(--r);padding:9px 12px;font-family:"Noto Sans KR",sans-serif;font-size:12px;color:var(--viridian);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
 .qa-ref-body{display:none;background:rgba(45,106,79,.05);border-left:3px solid var(--viridian);padding:10px 12px;font-size:12px;color:var(--charcoal);line-height:1.65;border-radius:0 var(--r) var(--r) 0;margin-top:2px;}
@@ -574,7 +606,58 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
   <div class="section-inner">
     <p class="s-label" style="color:var(--cobalt);">📢 NOTICE</p>
     <h2 class="s-title">호차별 이동 안내</h2>
-    <p class="notice-tip">전화번호를 누르면 바로 연결됩니다.</p>
+    <div class="notice-alert-box">
+      <div class="nab-item">⚠️ <strong>점심 후 차량 이동</strong><br>1일차 점심 후 → <strong>2호차</strong>로 이동<br>2일차 점심 후 → <strong>기존 차량</strong>으로 복귀</div>
+      <div class="nab-item">🪪 <strong>신분증 필수</strong><br>김시민호 탑승 시 신분증 반드시 지참</div>
+      <div class="nab-item">🏨 <strong>숙소</strong><br>뉴 라온 스테이 호텔<br><small>경상남도 진주시 영천강로 166</small></div>
+    </div>
+    <!-- 내 조 찾기 -->
+    <div class="my-group-wrap">
+      <p class="my-group-label">🔍 내 조 확인하기</p>
+      <div class="my-group-search">
+        <input type="text" id="group-search" class="my-group-input" placeholder="이름 입력 (예: 허선미)" oninput="searchGroup(this.value)" autocomplete="off">
+      </div>
+      <div id="group-result" class="group-result"></div>
+    </div>
+    <script>
+    var memberList = [
+      {name:'한민규',region:'천안',group:'3조'},{name:'강계숙',region:'천안',group:'3조'},
+      {name:'김민배',region:'천안',group:'3조'},{name:'맹승호',region:'천안',group:'3조'},
+      {name:'박착래',region:'천안',group:'3조'},{name:'신동기',region:'천안',group:'3조'},
+      {name:'성은석',region:'천안',group:'3조'},{name:'안유정',region:'천안',group:'3조'},
+      {name:'이동훈',region:'천안',group:'3조'},{name:'이창수',region:'천안',group:'3조'},
+      {name:'조승래',region:'천안',group:'3조'},{name:'최승길',region:'천안',group:'3조'},
+      {name:'한대진',region:'천안',group:'3조'},{name:'김준섭',region:'공주',group:'3조'},
+      {name:'박경용',region:'공주',group:'3조'},{name:'정평순',region:'공주',group:'3조'},
+      {name:'강민',region:'아산',group:'3조'},{name:'김수진',region:'아산',group:'3조'},
+      {name:'김나현',region:'아산',group:'3조'},{name:'오수미',region:'아산',group:'3조'},
+      {name:'안성철',region:'아산',group:'3조'},{name:'조선희',region:'아산',group:'3조'},
+      {name:'강현준',region:'서산',group:'3조'},{name:'유병숙',region:'서산',group:'3조'},
+      {name:'오성범',region:'서산',group:'3조'},{name:'오한석',region:'서산',group:'4조'},
+      {name:'이희윤',region:'서산',group:'4조'},{name:'전영구',region:'서산',group:'4조'},
+      {name:'조희정',region:'서산',group:'4조'},{name:'지궁청',region:'서산',group:'4조'},
+      {name:'허선미',region:'계룡',group:'4조'},{name:'김연옥',region:'당진',group:'4조'},
+      {name:'박영준',region:'당진',group:'4조'},{name:'정효경',region:'당진',group:'4조'},
+      {name:'허봉선',region:'당진',group:'4조'},{name:'최철용',region:'부여',group:'4조'},
+      {name:'김호곤',region:'서천',group:'4조'},{name:'남준희',region:'서천',group:'4조'},
+      {name:'박미선',region:'도협회',group:'4조'},{name:'이아현',region:'도협회',group:'4조'}
+    ];
+    function searchGroup(val) {
+      var res = document.getElementById('group-result');
+      val = val.trim();
+      if (!val) { res.innerHTML = ''; return; }
+      var found = memberList.filter(function(m){ return m.name.indexOf(val) > -1; });
+      if (found.length === 0) {
+        res.innerHTML = '<div class="gr-none">일치하는 이름이 없습니다</div>';
+      } else {
+        res.innerHTML = found.map(function(m){
+          var cls = m.group === '3조' ? 'gr-3' : 'gr-4';
+          return '<div class="gr-card '+cls+'"><span class="gr-group">'+m.group+'</span><span class="gr-name">'+m.name+'</span><span class="gr-region">'+m.region+'</span></div>';
+        }).join('');
+      }
+    }
+    </script>
+    <p class="notice-tip">각 호차 기사님 전화번호를 누르면 바로 연결됩니다.</p>
     <div class="hr"></div>
 <!-- 이동 정보 -->
     <div class="transport-wrap">
@@ -690,17 +773,36 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
         <div class="schedule-day">
       <p class="day-label">DAY 1 · 04.23 목</p>
       <div class="schedule-row"><span class="schedule-time">08:30</span><div class="schedule-content"><strong>이동 출발</strong><small>충청남도 → 경상남도 진주</small></div></div>
-      <div class="schedule-row"><span class="schedule-time">12:10</span><div class="schedule-content"><strong>중식</strong><small>하연옥 · 진주시 이현동 1191</small></div></div>
-      <div class="schedule-row"><span class="schedule-time">13:30</span><div class="schedule-content"><strong>진양호 우드랜드</strong><small>현장 답사</small></div></div>
-      <div class="schedule-row"><span class="schedule-time">14:30</span><div class="schedule-content"><strong>물빛나루쉼터 · 진주남강유등전시관 · 진주성</strong><small>현장 답사 · 김시민호 탑승(30분코스)</small></div></div>
-      <div class="schedule-row"><span class="schedule-time">18:00</span><div class="schedule-content"><strong>석식 · 숙소 이동</strong></div></div>
-      <div class="schedule-row"><span class="schedule-time">19:30</span><div class="schedule-content"><strong>전문가 토의</strong><small>현장여건에 따라 변동 가능</small></div></div>
+      <div class="schedule-row"><span class="schedule-time">12:10</span><div class="schedule-content"><strong>중식</strong><small>하연옥 · 진주시 이현동 1191 · ⚠️ 점심 후 2호차로 이동</small></div></div>
+      <div class="schedule-row"><span class="schedule-time">13:30</span><div class="schedule-content"><strong>진양호 우드랜드</strong><small>현장 답사 · 진주시 도시주택국장 인사</small></div></div>
+      <div class="schedule-row schedule-row-group"><span class="schedule-time">14:30</span><div class="schedule-content">
+        <strong>조별 분산 답사</strong>
+        <div class="group-badges">
+          <div class="group-badge group-14">
+            <span class="gb-label">1·2조</span>
+            <div class="gb-content">
+              <div>14:30~16:00&nbsp; 물빛나루쉼터 · 유등전시관 · 김시민호 탑승 🪪</div>
+              <div>16:00~17:00&nbsp; 진주성 · 진주박물관 · 호국마루</div>
+            </div>
+          </div>
+          <div class="group-badge group-23">
+            <span class="gb-label">3·4조</span>
+            <div class="gb-content">
+              <div>14:30~15:30&nbsp; 진주성 · 진주박물관 · 호국마루</div>
+              <div>15:30~17:00&nbsp; 물빛나루쉼터 · 유등전시관 · 김시민호 탑승 🪪</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+            <div class="schedule-row"><span class="schedule-time">17:20</span><div class="schedule-content"><strong>석식</strong><small>유정장어 · 장어</small></div></div>
+      <div class="schedule-row"><span class="schedule-time">20:00</span><div class="schedule-content"><strong>숙소</strong><small>뉴 라온 스테이 호텔 · 진주시 영천강로 166</small></div></div>
     </div>
     <div class="schedule-day">
       <p class="day-label">DAY 2 · 04.24 금</p>
-      <div class="schedule-row"><span class="schedule-time">10:00</span><div class="schedule-content"><strong>진주실크박물관</strong><small>현장 답사</small></div></div>
-      <div class="schedule-row"><span class="schedule-time">11:00</span><div class="schedule-content"><strong>이동 · 귀환</strong></div></div>
-      <div class="schedule-row"><span class="schedule-time">13:00</span><div class="schedule-content"><strong>복귀</strong></div></div>
+      <div class="schedule-row"><span class="schedule-time">07:30</span><div class="schedule-content"><strong>호텔 조식</strong></div></div>
+      <div class="schedule-row"><span class="schedule-time">10:00</span><div class="schedule-content"><strong>진주실크박물관</strong><small>현장 답사 · 도스튼 해설</small></div></div>
+      <div class="schedule-row"><span class="schedule-time">11:20</span><div class="schedule-content"><strong>중식</strong><small>진주석원 · 삼계탕 · ⚠️ 점심 후 기존 차량 복귀</small></div></div>
+      <div class="schedule-row"><span class="schedule-time">12:30</span><div class="schedule-content"><strong>복 귀</strong><small>충청남도 → 출발지</small></div></div>
     </div>
   </div>
 </section>
@@ -1165,7 +1267,8 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
           <label class="form-label">직종</label>
           <select class="form-select" id="bus-sel">
             <option value="">선택</option>
-            <option value="건축사">건축사</option>
+            <option value="건축사(3조)">건축사 — 3조</option>
+            <option value="건축사(4조)">건축사 — 4조</option>
             <option value="공무원">공무원</option>
             <option value="관계자">관계자</option>
           </select>
