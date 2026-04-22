@@ -28,7 +28,7 @@
 @media(min-width:500px){.transport-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .transport-grid .transport-card:last-child{grid-column:1/-1;}}e=1.0">
 <meta name="description" content="충청남도건축사회 BIM·AI위원회 · 아르키비아(ARCHIVIA) 허선미 건축사 기획 · 2026 건축기행 진주 · 진양호 우드랜드·물빛나루쉼터·진주실크박물관 공간읽기">
-<meta name="keywords" content="아르키비아, ARCHIVIA, 허선미 건축사, 충청남도건축사회 BIM·AI위원회, 충남건축사회, 건축기행, 진주, 목조건축, BIM, AI, 진양호 우드랜드, 물빛나루쉼터, 진주남강유등전시관, 진주성, 진주실크박물관, 패시브건축, 공간읽기, 건축답사, 2026">
+<meta name="keywords" content="아르키비아, ARCHIVIA, 허선미 건축사, 충청남도건축사회 BIM·AI위원회, 충남건축사회, 건축기행, 진주, 목조건축, BIM, AI, 진양호 우드랜드, 물빛나루쉼터, 진주남강유등전시관, 진주성, 국립진주박물관, 진주성 호국마루, 진주실크박물관, 패시브건축, 공간읽기, 건축답사, 2026">
 <meta name="author" content="허선미 건축사 · 아르키비아 건축사사무소(ARCHIVIA) · 충청남도건축사회 BIM·AI위원회">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ARCHIVIA · 아르키비아 건축사사무소">
@@ -129,9 +129,9 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
 
 /* ── NAV ── */
 .nav{position:sticky;top:0;z-index:100;background:var(--charcoal);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
-.nav-left{display:flex;flex-direction:column;gap:2px;}
-.nav-brand{font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.14em;color:rgba(242,244,247,.5);text-decoration:none;text-transform:uppercase;}
-.nav-sub{font-family:"Noto Sans KR",sans-serif;font-size:10px;color:rgba(242,244,247,.5);letter-spacing:.04em;}
+.nav-left{display:flex;flex-direction:column;gap:1px;}
+.nav-brand{font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.14em;color:rgba(242,244,247,.55);text-decoration:none;text-transform:uppercase;line-height:1.3;}
+.nav-sub{font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.06em;color:rgba(242,244,247,.55);line-height:1.3;}
 .nav-brand:hover{color:rgba(242,244,247,.9);}
 .nav-title{font-family:"Noto Serif KR",serif;font-size:13px;color:rgba(242,244,247,.88);}
 
@@ -443,7 +443,7 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
 .slot-photo-count{position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-family:"DM Mono",monospace;padding:2px 6px;border-radius:10px;}
 .slot-body{padding:10px 14px 8px;}
 .slot-actions{display:flex;gap:5px;padding:6px 12px 10px;border-top:1px solid rgba(26,26,26,.05);}
-@media(max-width:440px){.my-records-grid{grid-template-columns:1fr;}}
+@media(max-width:440px){.my-records-grid{grid-template-columns:1fr;}.hero{padding:48px 24px 36px;}.hero-sub{display:none;}.hero-meta{gap:16px;}.hero-meta-item .label{font-size:9px;}.hero-meta-item .value{font-size:13px;}}
 /* ── 기록 모드 토글 ── */
 .mode-toggle{display:flex;gap:0;border-radius:var(--r);overflow:hidden;border:1.5px solid var(--border);background:#fff;}
 .mode-btn{flex:1;padding:9px 12px;border:none;background:#fff;font-family:"Noto Sans KR",sans-serif;font-size:12px;color:#999;cursor:pointer;transition:all .18s;line-height:1.3;}
@@ -589,7 +589,6 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
     <a href="https://www.archivia.kr" class="nav-brand" target="_blank">ARCHIVIA</a>
     <span class="nav-sub">충청남도건축사회 BIM·AI위원회</span>
   </div>
-  <span class="nav-title">2026 건축기행 · 진주</span>
 </nav>
 </header>
 
@@ -1170,8 +1169,7 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
         </div>
         <div class="bcard-body">
           <h3 class="bcard-name">국립진주박물관</h3>
-          <p class="bcard-en">Jinju National Museum · Kim Swoo-geun, 1984
-
+          <p class="bcard-en">Jinju National Museum · Kim Swoo-geun, 1984</p>
           <div class="bcard-specs">
             <span class="spec-chip">김수근 작품</span>
             <span class="spec-chip">1998년 국립 승격</span>
@@ -1235,8 +1233,7 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
         </div>
         <div class="bcard-body">
           <h3 class="bcard-name">진주성 호국마루</h3>
-          <p class="bcard-en">Jinju Battle History Park · Seung H-Sang, 2024
-
+          <p class="bcard-en">Jinju Battle History Park · Seung H-sang, 2024</p>
           <div class="bcard-specs">
             <span class="spec-chip">승효상 작품</span>
             <span class="spec-chip">2024년 준공</span>
@@ -1493,7 +1490,9 @@ var BLDG_COLORS = {
   '물빛나루쉼터':      { main:'#2D7D9A', light:'rgba(45,125,154,.1)',  tag:'rgba(45,125,154,.15)'  },
   '진주남강유등전시관': { main:'#B5692E', light:'rgba(181,105,46,.1)',  tag:'rgba(181,105,46,.15)'  },
   '진주성':           { main:'#5C5450', light:'rgba(92,84,80,.1)',     tag:'rgba(92,84,80,.15)'    },
-  '진주실크박물관':    { main:'#2D6A4F', light:'rgba(45,106,79,.1)',   tag:'rgba(45,106,79,.15)'   }
+  '진주실크박물관':    { main:'#2D6A4F', light:'rgba(45,106,79,.1)',   tag:'rgba(45,106,79,.15)'   },
+  '국립진주박물관':  { main:'#2E5894', light:'rgba(46,88,148,.1)',   tag:'rgba(46,88,148,.15)'  },
+  '진주성 호국마루': { main:'#2D6A4F', light:'rgba(45,106,79,.1)',   tag:'rgba(45,106,79,.15)'  }
 };
 var BLDG_ORDER = ['진양호 우드랜드', '물빛나루쉼터', '진주남강유등전시관', '진주성', '국립진주박물관', '진주성 호국마루', '진주실크박물관'];
 
