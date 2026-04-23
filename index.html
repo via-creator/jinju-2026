@@ -800,7 +800,7 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
     <p class="map-sub">핀을 탭하면 장소 정보와 네이버지도 연결이 됩니다.</p>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-    <div id="jinju-map" style="height:360px;border-radius:12px;overflow:hidden;margin-bottom:8px;"></div>
+    <div id="jinju-map" style="height:420px;border-radius:12px;overflow:hidden;margin-bottom:8px;"></div>
     <p style="font-size:12px;color:#666;text-align:right;margin-bottom:16px;">지도가 표시되지 않으면 → <a href="https://map.naver.com/p/search/진주시%20판문동%20478" style="color:var(--cobalt);font-weight:600;text-decoration:underline;">네이버 지도로 보기</a></p>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
@@ -812,11 +812,13 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
       }).addTo(map);
 
       var places = [
-        { n:1, day:1, name:'진양호 우드랜드', time:'13:30', lat:35.2098, lng:128.0468, color:'#2E5894', naver:'https://map.naver.com/p/search/진양호+우드랜드' },
-        { n:2, day:1, name:'물빛나루쉼터', time:'14:30', lat:35.1869, lng:128.0878, color:'#2E5894', naver:'https://map.naver.com/p/search/진주+물빛나루쉼터' },
-        { n:3, day:1, name:'진주남강유등전시관', time:'14:30', lat:35.1882, lng:128.0905, color:'#2E5894', naver:'https://map.naver.com/p/search/진주남강유등전시관' },
-        { n:4, day:1, name:'진주성', time:'14:30', lat:35.1897, lng:128.0803, color:'#2E5894', naver:'https://map.naver.com/p/search/진주성' },
-        { n:5, day:2, name:'진주실크박물관', time:'10:00', lat:35.1390, lng:128.0560, color:'#2D6A4F', naver:'https://map.naver.com/p/search/진주실크박물관' }
+        { n:1,  day:1, group:'all', name:'진양호 우드랜드',    time:'13:30', lat:35.2098, lng:128.0468, color:'#2E5894', naver:'https://map.naver.com/p/search/진양호+우드랜드' },
+        { n:2,  day:1, group:'34',  name:'진주성',            time:'14:30', lat:35.1897, lng:128.0803, color:'#7C5C3E', naver:'https://map.naver.com/p/search/진주성' },
+        { n:3,  day:1, group:'34',  name:'국립진주박물관',      time:'16:00', lat:35.1903, lng:128.0832, color:'#7C5C3E', naver:'https://map.naver.com/p/search/국립진주박물관' },
+        { n:4,  day:1, group:'34',  name:'진주성 호국마루',     time:'16:30', lat:35.1908, lng:128.0817, color:'#7C5C3E', naver:'https://map.naver.com/p/search/진주성+호국마루' },
+        { n:5,  day:1, group:'34',  name:'물빛나루쉼터',       time:'15:30', lat:35.1869, lng:128.0878, color:'#7C5C3E', naver:'https://map.naver.com/p/search/진주+물빛나루쉼터' },
+        { n:6,  day:1, group:'34',  name:'진주남강유등전시관',   time:'16:00', lat:35.1882, lng:128.0905, color:'#7C5C3E', naver:'https://map.naver.com/p/search/진주남강유등전시관' },
+        { n:7,  day:2, group:'all', name:'진주실크박물관',      time:'10:00', lat:35.1906, lng:128.0748, color:'#2D6A4F', naver:'https://map.naver.com/p/search/진주실크박물관' }
       ];
 
       var markers = [];
@@ -828,8 +830,8 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
               + '<span style="transform:rotate(45deg);color:#fff;font-family:DM Mono,monospace;font-size:11px;font-weight:500;">' + p.n + '</span>'
               + '</div></div>',
           iconSize: [32,40],
-          iconAnchor: [14,40],
-          popupAnchor: [0,-42]
+          iconAnchor: [16,40],
+          popupAnchor: [0,-44]
         });
 
         var marker = L.marker([p.lat, p.lng], {icon:icon}).addTo(map);
@@ -843,44 +845,57 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
         markers.push(marker);
       });
 
-      // DAY1 루트 라인 (1→2→3→4, Cobalt)
-      var day1Coords = places.filter(function(p){return p.day===1;}).map(function(p){return [p.lat, p.lng];});
-      L.polyline(day1Coords, {
-        color: '#2E5894', weight: 2.5, opacity: 0.55, dashArray: '6 4'
-      }).addTo(map);
+      // DAY1 전체 구간 라인 (①진양호 → 조별분산 장소들)
+      var day1All = places.filter(function(p){return p.day===1;}).map(function(p){return [p.lat,p.lng];});
+      L.polyline(day1All, {color:'#2E5894', weight:2, opacity:0.4, dashArray:'5 5'}).addTo(map);
 
-      // DAY2 마커는 별도 (루트 선 없음, 단독)
-      // 모든 마커가 온전히 보이도록 fitBounds + 여유 패딩
+      // 3·4조(건축사) 분산 구간 라인: ②진주성→③박물관→④호국마루→⑤물빛나루→⑥유등
+      var split34 = places.filter(function(p){return p.group==='34';}).map(function(p){return [p.lat,p.lng];});
+      L.polyline(split34, {color:'#B5692E', weight:2.5, opacity:0.7, dashArray:'4 3'}).addTo(map);
+
       var group = L.featureGroup(markers);
-      map.fitBounds(group.getBounds(), { padding: [64, 40] });
+      map.fitBounds(group.getBounds(), { padding: [28, 28] });
     })();
     </script>
 
     <!-- 장소 목록 -->
     <div class="place-list">
+      <div class="place-day-label">DAY 1 · 04.23</div>
       <a href="https://map.naver.com/p/search/진양호+우드랜드" target="_blank" class="place-row">
         <span class="place-num">01</span>
-        <div class="place-info"><div class="place-name">진양호 우드랜드</div><div class="place-addr">경남 진주시 판문오동길 99-7 · DAY 1 · 13:30</div></div>
+        <div class="place-info"><div class="place-name">진양호 우드랜드</div><div class="place-addr">경남 진주시 판문오동길 99-7 · 13:30 · 전체</div></div>
+        <span class="place-arrow">→</span>
+      </a>
+      <div class="place-group-label">3·4조 분산 (건축사)</div>
+      <a href="https://map.naver.com/p/search/진주성" target="_blank" class="place-row">
+        <span class="place-num">02</span>
+        <div class="place-info"><div class="place-name">진주성</div><div class="place-addr">경남 진주시 본성동 · 14:30</div></div>
+        <span class="place-arrow">→</span>
+      </a>
+      <a href="https://map.naver.com/p/search/국립진주박물관" target="_blank" class="place-row">
+        <span class="place-num">03</span>
+        <div class="place-info"><div class="place-name">국립진주박물관</div><div class="place-addr">경남 진주시 남강로 626-35 · 16:00</div></div>
+        <span class="place-arrow">→</span>
+      </a>
+      <a href="https://map.naver.com/p/search/진주성+호국마루" target="_blank" class="place-row">
+        <span class="place-num">04</span>
+        <div class="place-info"><div class="place-name">진주성 호국마루</div><div class="place-addr">경남 진주시 본성동 진주대첩역사공원 · 16:30</div></div>
         <span class="place-arrow">→</span>
       </a>
       <a href="https://map.naver.com/p/search/진주+물빛나루쉼터" target="_blank" class="place-row">
-        <span class="place-num">02</span>
-        <div class="place-info"><div class="place-name">물빛나루쉼터</div><div class="place-addr">경남 진주시 망경동 634 · DAY 1 · 14:30</div></div>
+        <span class="place-num">05</span>
+        <div class="place-info"><div class="place-name">물빛나루쉼터</div><div class="place-addr">경남 진주시 망경동 634 · 15:30</div></div>
         <span class="place-arrow">→</span>
       </a>
       <a href="https://map.naver.com/p/search/진주남강유등전시관" target="_blank" class="place-row">
-        <span class="place-num">03</span>
-        <div class="place-info"><div class="place-name">진주남강유등전시관</div><div class="place-addr">경남 진주시 망경동 · DAY 1 · 14:30</div></div>
+        <span class="place-num">06</span>
+        <div class="place-info"><div class="place-name">진주남강유등전시관</div><div class="place-addr">경남 진주시 망경동 · 16:00</div></div>
         <span class="place-arrow">→</span>
       </a>
-      <a href="https://map.naver.com/p/search/진주성" target="_blank" class="place-row">
-        <span class="place-num">04</span>
-        <div class="place-info"><div class="place-name">진주성</div><div class="place-addr">경남 진주시 본성동 · DAY 1 · 14:30</div></div>
-        <span class="place-arrow">→</span>
-      </a>
+      <div class="place-day-label" style="margin-top:12px;">DAY 2 · 04.24</div>
       <a href="https://map.naver.com/p/search/진주실크박물관" target="_blank" class="place-row">
-        <span class="place-num viridian">05</span>
-        <div class="place-info"><div class="place-name">진주실크박물관</div><div class="place-addr">경남 진주시 문산읍 월아산로 994 · DAY 2 · 10:00</div></div>
+        <span class="place-num viridian">07</span>
+        <div class="place-info"><div class="place-name">진주실크박물관</div><div class="place-addr">경남 진주시 문산읍 월아산로 994 · 10:00 · 전체</div></div>
         <span class="place-arrow">→</span>
       </a>
     </div>
@@ -1382,8 +1397,7 @@ body{background:var(--icy);color:var(--ink);font-family:"Noto Sans KR",sans-seri
           <label class="form-label">직종</label>
           <select class="form-select" id="bus-sel">
             <option value="">선택</option>
-            <option value="건축사(3조)">건축사 — 3조</option>
-            <option value="건축사(4조)">건축사 — 4조</option>
+            <option value="건축사">건축사</option>
             <option value="공무원">공무원</option>
             <option value="관계자">관계자</option>
           </select>
